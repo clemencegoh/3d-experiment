@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useRef, useState } from "react";
 import {
   Engine,
@@ -44,7 +42,7 @@ export function SpinningBox({
   useBeforeRender((scene) => {
     if (boxRef.current) {
       // Delta time smoothes the animation.
-      var deltaTimeInMillis = scene.getEngine().getDeltaTime();
+      const deltaTimeInMillis = scene.getEngine().getDeltaTime();
       boxRef.current.rotation.y +=
         (rpm / 60) * Math.PI * 2 * (deltaTimeInMillis / 1000);
     }

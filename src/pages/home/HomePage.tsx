@@ -1,32 +1,23 @@
 "use client";
 
-import { useWindowSize } from "@/hooks/eventListeners";
-import React, { useRef } from "react";
-import {
-  Engine,
-  Scene,
-  useBeforeRender,
-  useClick,
-  useHover,
-} from "react-babylonjs";
+import { useWindowSize } from "src/hooks/eventListeners";
+import React from "react";
+import { Engine, Scene } from "react-babylonjs";
 import { Vector3, Color3 } from "@babylonjs/core";
-import { SpinningBox } from "@/components/mindmap/SpinningBox";
+import { SpinningBox } from "src/components/mindmap/SpinningBox";
 
 export default function HomePage() {
-  // const [canvasWidth, canvasHeight] = useWindowSize();
-  // const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [canvasWidth, canvasHeight] = useWindowSize();
 
-  // return (
-  //   <canvas
-  //     ref={canvasRef}
-  //     id="mainCanvas"
-  //     width={canvasWidth}
-  //     height={canvasHeight}
-  //   ></canvas>
-  // );
   return (
     <div>
-      <Engine antialias adaptToDeviceRatio canvasId="babylonJS">
+      <Engine
+        antialias
+        adaptToDeviceRatio
+        width={canvasWidth}
+        height={canvasHeight - 10}
+        canvasId="babylonJS"
+      >
         <Scene>
           <arcRotateCamera
             name="camera1"
@@ -38,7 +29,7 @@ export default function HomePage() {
           <hemisphericLight
             name="light1"
             intensity={0.7}
-            direction={Vector3.Up()}
+            direction={new Vector3(0.5, 1.0, 0)}
           />
           <SpinningBox
             name="left"
