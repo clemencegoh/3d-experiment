@@ -1,10 +1,12 @@
 import { useWindowSize } from "src/hooks/eventListeners";
-import React from "react";
+import React, { useRef } from "react";
 import { Engine, Scene } from "react-babylonjs";
-import { Vector3, Color3 } from "@babylonjs/core";
+import { Vector3, Color3, Camera, Mesh } from "@babylonjs/core";
 import InfoBox, { TInfoBoxProps } from "src/components/mindmap/InfoBox";
 import { use2DGUI } from "src/hooks/GuiPlane";
 import { useKeyboardMovementControls } from "src/hooks/keyboardControls";
+import { useMap } from "usehooks-ts";
+import InfoNode from "src/components/mindmap/InfoNode";
 
 const knowledgeBase: TInfoBoxProps[] = [
   {
@@ -36,11 +38,17 @@ const knowledgeBase: TInfoBoxProps[] = [
 export default function HomePage() {
   const [canvasWidth, canvasHeight] = useWindowSize();
   const { updateGUIPlanePosition, setGUIPlane } = use2DGUI();
+  const [labelsMap, { set: setLabelsMap }] = useMap<string, Mesh>(new Map());
   const movementControls = useKeyboardMovementControls();
+
+  const faceAllLabelsToCamera = (camera: Camera) => {
+    Array.from(labelsMap.values()).forEach((plane) => {
+      plane.lookAt(camera.position, 0, Math.PI, Math.PI);
+    });
+  };
 
   return (
     <div>
-      {/* <With2DUI /> */}
       <Engine
         antialias
         adaptToDeviceRatio
@@ -49,20 +57,16 @@ export default function HomePage() {
         canvasId="babylonJS"
       >
         <Scene>
-          {/* <arcRotateCamera
-            name="camera1"
-            target={Vector3.Zero()}
-            alpha={Math.PI / 2}
-            beta={Math.PI / 4}
-            radius={8}
-            onViewMatrixChangedObservable={updateGUIPlanePosition}
-          /> */}
           <universalCamera
             name={"camera1"}
             // Arbitrary position so we can see all our boxes
-            position={new Vector3(2, 10, 30)}
+            position={new Vector3(-2, 20, 20)}
+            target={Vector3.Zero()}
             {...movementControls}
-            onViewMatrixChangedObservable={updateGUIPlanePosition}
+            onViewMatrixChangedObservable={(camera: Camera) => {
+              updateGUIPlanePosition(camera);
+              faceAllLabelsToCamera(camera);
+            }}
           />
           <hemisphericLight
             name="light1"
@@ -70,7 +74,12 @@ export default function HomePage() {
             direction={new Vector3(0.5, 1.0, 0)}
           />
           {knowledgeBase.map((props) => (
-            <InfoBox key={props.title} {...props} setPlane={setGUIPlane} />
+            <InfoNode
+              key={props.title}
+              {...props}
+              setPlane={setGUIPlane}
+              setLabelsMap={setLabelsMap}
+            />
           ))}
         </Scene>
       </Engine>

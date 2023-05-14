@@ -1,6 +1,7 @@
 import { GUID, Mesh, Texture, Vector3 } from "@babylonjs/core";
 import { Control } from "@babylonjs/gui";
-import React from "react";
+import React, { useEffect } from "react";
+import { useEscapeEventListener } from "src/hooks/keyboardControls";
 
 export type THUDModalProps = {
   show?: boolean;
@@ -29,6 +30,8 @@ export default function HUDModal({
   const dialogHeight = height ?? 1;
   const dialogWidth = width ?? 3;
   // const dialogWidth = 1;
+
+  useEscapeEventListener(onClose);
 
   return show ? (
     <plane

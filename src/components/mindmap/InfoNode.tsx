@@ -1,9 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Vector3, Color3, Mesh } from "@babylonjs/core";
-import { useBeforeRender, useClick, useHover } from "react-babylonjs";
+import { Vector3, Color3, Mesh, Texture, Scene } from "@babylonjs/core";
+import { useClick, useHover } from "react-babylonjs";
 import HUDModal from "../gui/HUDModal";
+import { Control } from "@babylonjs/gui";
+import InfoLabel from "./InfoLabel";
 
-export type TInfoBoxProps = {
+export type TInfoNodeProps = {
   title: string;
   position: Vector3;
   color: Color3;
@@ -11,17 +13,20 @@ export type TInfoBoxProps = {
   body: string;
 
   setPlane?: (plane: Mesh) => void;
+  setLabelsMap?: (key: string, value: Mesh) => void;
 };
 
-export default function InfoBox({
+export default function InfoNode({
   title,
   body,
 
   position,
   color,
   hoverColor,
+
   setPlane,
-}: TInfoBoxProps) {
+  setLabelsMap,
+}: TInfoNodeProps) {
   const boxRef = useRef<Mesh | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -36,26 +41,20 @@ export default function InfoBox({
     boxRef
   );
 
-  // This will rotate the box on every Babylon frame.
-  const rpm = 5;
-  useBeforeRender((scene) => {
-    if (boxRef.current) {
-      // Delta time smoothes the animation.
-      const deltaTimeInMillis = scene.getEngine().getDeltaTime();
-      boxRef.current.rotation.y +=
-        (rpm / 60) * Math.PI * 2 * (deltaTimeInMillis / 1000);
-    }
-  });
-
   return (
     <>
-      <box size={2} name={title} ref={boxRef} position={position}>
+      <InfoLabel
+        label={title}
+        parentPosition={position}
+        setLabelsMap={setLabelsMap}
+      />
+      <sphere diameter={2} name={title} ref={boxRef} position={position}>
         <standardMaterial
           name={`${title}-mat`}
           diffuseColor={hovered ? hoverColor : color}
           specularColor={Color3.Black()}
         />
-      </box>
+      </sphere>
       {showModal && (
         <HUDModal
           title={title}
