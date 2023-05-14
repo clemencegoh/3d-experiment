@@ -28,6 +28,7 @@ export default function HUDModal({
 }: THUDModalProps) {
   const dialogHeight = height ?? 1;
   const dialogWidth = width ?? 3;
+  // const dialogWidth = 1;
 
   return show ? (
     <plane

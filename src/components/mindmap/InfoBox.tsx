@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Vector3, Color3, Mesh } from "@babylonjs/core";
 import { useBeforeRender, useClick, useHover } from "react-babylonjs";
-import HUDModal from "./HUDModal";
+import HUDModal from "../gui/HUDModal";
+import FullscreenModal from "../gui/FullscreenModal";
 
 export type TInfoBoxProps = {
   title: string;
@@ -65,6 +66,13 @@ export default function InfoBox({
           setPlane={setPlane}
         />
       )}
+      {/* {showModal && (
+        <FullscreenModal
+          onClose={() => setShowModal(false)}
+          show={showModal}
+          setPlane={setPlane}
+        />
+      )} */}
     </>
   );
 }

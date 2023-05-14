@@ -113,28 +113,24 @@ const UIComponent: FC = () => {
 
   const setPlane = (newPlane: Mesh) => {
     plane.current = newPlane;
+    // if (newPlane._scene && newPlane._scene.activeCamera) {
+    //   const { activeCamera } = newPlane._scene;
 
-    if (newPlane._scene && newPlane._scene.activeCamera) {
-      const { activeCamera } = newPlane._scene;
-
-      // window.setTimeout(() => {
-      //   // we only need this hack because of storybook?
-      //   const forwardRayDirection = activeCamera.getForwardRay().direction;
-      //   newPlane.position = activeCamera.position.add(
-      //     forwardRayDirection.scale(
-      //       1.5 / activeCamera.fov /* * forwardRay.length */
-      //     )
-      //   );
-      //   newPlane.lookAt(activeCamera.position, 0, Math.PI, Math.PI);
-      // }, 10);
-    }
+    //   // window.setTimeout(() => {
+    //   //   // we only need this hack because of storybook?
+    //   //   const forwardRayDirection = activeCamera.getForwardRay().direction;
+    //   //   newPlane.position = activeCamera.position.add(
+    //   //     forwardRayDirection.scale(
+    //   //       1.5 / activeCamera.fov /* * forwardRay.length */
+    //   //     )
+    //   //   );
+    //   //   newPlane.lookAt(activeCamera.position, 0, Math.PI, Math.PI);
+    //   // }, 10);
+    // }
   };
 
   const dialogWidth = 3;
   const dialogHeight = 1;
-
-  // <button onClick={this.toggleOrder}>reverse order</button> (for testing insertBefore in react-reconciler - and put in a hosted element like the light).
-  // boxes.sort((a, b) => a.index - b.index);
 
   return (
     <Engine
