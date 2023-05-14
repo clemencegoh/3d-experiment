@@ -1,12 +1,19 @@
 import { useWindowSize } from "src/hooks/eventListeners";
 import React, { useRef } from "react";
 import { Engine, Scene } from "react-babylonjs";
-import { Vector3, Color3, Camera, Mesh } from "@babylonjs/core";
+import {
+  Vector3,
+  Color3,
+  Camera,
+  Mesh,
+  UniversalCamera,
+} from "@babylonjs/core";
 import InfoBox, { TInfoBoxProps } from "src/components/mindmap/InfoBox";
 import { use2DGUI } from "src/hooks/GuiPlane";
 import { useKeyboardMovementControls } from "src/hooks/keyboardControls";
 import { useMap } from "usehooks-ts";
 import InfoNode from "src/components/mindmap/InfoNode";
+import { zoom } from "src/utils/cameraUtils";
 
 const knowledgeBase: TInfoBoxProps[] = [
   {
@@ -40,11 +47,19 @@ export default function HomePage() {
   const { updateGUIPlanePosition, setGUIPlane } = use2DGUI();
   const [labelsMap, { set: setLabelsMap }] = useMap<string, Mesh>(new Map());
   const movementControls = useKeyboardMovementControls();
+  const cameraRef = useRef<UniversalCamera | null>(null);
 
   const faceAllLabelsToCamera = (camera: Camera) => {
     Array.from(labelsMap.values()).forEach((plane) => {
       plane.lookAt(camera.position, 0, Math.PI, Math.PI);
     });
+  };
+
+  const zoomToNode = (node: Mesh) => {
+    if (cameraRef.current) {
+      zoom(cameraRef.current, node);
+      console.log(cameraRef.current.position);
+    }
   };
 
   return (
@@ -58,6 +73,7 @@ export default function HomePage() {
       >
         <Scene>
           <universalCamera
+            ref={cameraRef}
             name={"camera1"}
             // Arbitrary position so we can see all our boxes
             position={new Vector3(-2, 20, 20)}
@@ -79,6 +95,7 @@ export default function HomePage() {
               {...props}
               setPlane={setGUIPlane}
               setLabelsMap={setLabelsMap}
+              zoomToNode={zoomToNode}
             />
           ))}
         </Scene>

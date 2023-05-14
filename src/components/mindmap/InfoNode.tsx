@@ -4,6 +4,7 @@ import { useClick, useHover } from "react-babylonjs";
 import HUDModal from "../gui/HUDModal";
 import { Control } from "@babylonjs/gui";
 import InfoLabel from "./InfoLabel";
+import { zoom } from "src/utils/cameraUtils";
 
 export type TInfoNodeProps = {
   title: string;
@@ -14,6 +15,7 @@ export type TInfoNodeProps = {
 
   setPlane?: (plane: Mesh) => void;
   setLabelsMap?: (key: string, value: Mesh) => void;
+  zoomToNode?: (node: Mesh) => void;
 };
 
 export default function InfoNode({
@@ -26,19 +28,26 @@ export default function InfoNode({
 
   setPlane,
   setLabelsMap,
+  zoomToNode,
 }: TInfoNodeProps) {
-  const boxRef = useRef<Mesh | null>(null);
+  const containerRef = useRef<Mesh | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   useClick(() => {
-    setShowModal(true);
-  }, boxRef);
+    if (containerRef.current) {
+      zoomToNode?.(containerRef.current);
+    }
+    const showModalTimeout = setTimeout(() => {
+      setShowModal(true);
+    }, 3000);
+    return () => clearTimeout(showModalTimeout);
+  }, containerRef);
 
   const [hovered, setHovered] = useState(false);
   useHover(
     () => setHovered(true),
     () => setHovered(false),
-    boxRef
+    containerRef
   );
 
   return (
@@ -48,7 +57,7 @@ export default function InfoNode({
         parentPosition={position}
         setLabelsMap={setLabelsMap}
       />
-      <sphere diameter={2} name={title} ref={boxRef} position={position}>
+      <sphere diameter={2} name={title} ref={containerRef} position={position}>
         <standardMaterial
           name={`${title}-mat`}
           diffuseColor={hovered ? hoverColor : color}
