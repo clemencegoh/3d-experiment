@@ -1,5 +1,5 @@
 import { useWindowSize } from "src/hooks/eventListeners";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Engine, Scene } from "react-babylonjs";
 import {
   Vector3,
@@ -8,37 +8,60 @@ import {
   Mesh,
   UniversalCamera,
 } from "@babylonjs/core";
-import InfoBox, { TInfoBoxProps } from "src/components/mindmap/InfoBox";
 import { use2DGUI } from "src/hooks/GuiPlane";
 import { useKeyboardMovementControls } from "src/hooks/keyboardControls";
 import { useMap } from "usehooks-ts";
-import InfoNode from "src/components/mindmap/InfoNode";
+import InfoNode, {
+  CInfoNode,
+  TInfoNodeProps,
+} from "src/components/mindmap/InfoNode";
 import { zoom } from "src/utils/cameraUtils";
 
-const knowledgeBase: TInfoBoxProps[] = [
-  {
-    title: "Box 1",
-    body: "Hello I am box 1",
+const node1 = new CInfoNode({
+  title: "Box 1",
+  content: "Hello I am box 1",
+  position: new Vector3(-2, 0, 0),
+});
+const node2 = new CInfoNode({
+  title: "Box 2",
+  content: "Hello I am box 2",
+  position: new Vector3(2, 0, 0),
+});
+const node3 = new CInfoNode({
+  title: "Box 3",
+  content: "Hello I am box 3",
+  position: new Vector3(6, 0, 0),
+});
+const node4 = new CInfoNode({
+  title: "Box 4",
+  content: "Hello I am box 4",
+  position: new Vector3(2, 0, -4),
+});
+node1.connectedNodes.set(node2.title, node2);
+node2.connectedNodes.set(node3.title, node3);
+node4.connectedNodes.set(node1.title, node1);
+node4.connectedNodes.set(node2.title, node2);
 
-    position: new Vector3(-2, 0, 0),
+const knowledgeBase: TInfoNodeProps[] = [
+  {
+    info: node1,
     color: Color3.FromHexString("#EEB5EB"),
     hoverColor: Color3.FromHexString("#C26DBC"),
   },
   {
-    title: "Box 2",
-    body: "Hello I am box 2",
-
-    position: new Vector3(2, 0, 0),
+    info: node2,
     color: Color3.FromHexString("#C8F4F9"),
     hoverColor: Color3.FromHexString("#3CACAE"),
   },
   {
-    title: "Box 3",
-    body: "Hello I am box 3",
-
-    position: new Vector3(6, 0, 0),
+    info: node3,
     color: Color3.FromHexString("#a1ca9c"),
     hoverColor: Color3.FromHexString("#55944e"),
+  },
+  {
+    info: node4,
+    color: Color3.FromHexString("#c2ca52"),
+    hoverColor: Color3.FromHexString("#93944e"),
   },
 ];
 
@@ -91,7 +114,7 @@ export default function HomePage() {
           />
           {knowledgeBase.map((props) => (
             <InfoNode
-              key={props.title}
+              key={props.info.title}
               {...props}
               setPlane={setGUIPlane}
               setLabelsMap={setLabelsMap}

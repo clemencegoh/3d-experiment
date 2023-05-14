@@ -1,17 +1,37 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Vector3, Color3, Mesh, Texture, Scene } from "@babylonjs/core";
-import { useClick, useHover } from "react-babylonjs";
+import React, { useRef, useState } from "react";
+import { Vector3, Color3, Mesh, Path3D } from "@babylonjs/core";
+import { Line, useClick, useHover } from "react-babylonjs";
 import HUDModal from "../gui/HUDModal";
-import { Control } from "@babylonjs/gui";
 import InfoLabel from "./InfoLabel";
-import { zoom } from "src/utils/cameraUtils";
+
+export class CInfoNode {
+  title: string;
+  content: string;
+  position: Vector3;
+  connectedNodes: Map<string, CInfoNode>;
+
+  constructor({
+    title,
+    content,
+    position,
+    connectedNodes = new Map(),
+  }: {
+    title: string;
+    content: string;
+    position: Vector3;
+    connectedNodes?: Map<string, CInfoNode>;
+  }) {
+    this.title = title;
+    this.content = content;
+    this.position = position;
+    this.connectedNodes = connectedNodes;
+  }
+}
 
 export type TInfoNodeProps = {
-  title: string;
-  position: Vector3;
+  info: CInfoNode;
   color: Color3;
   hoverColor: Color3;
-  body: string;
 
   setPlane?: (plane: Mesh) => void;
   setLabelsMap?: (key: string, value: Mesh) => void;
@@ -19,10 +39,8 @@ export type TInfoNodeProps = {
 };
 
 export default function InfoNode({
-  title,
-  body,
+  info,
 
-  position,
   color,
   hoverColor,
 
@@ -32,6 +50,7 @@ export default function InfoNode({
 }: TInfoNodeProps) {
   const containerRef = useRef<Mesh | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { title, position, content } = info;
 
   useClick(() => {
     if (containerRef.current) {
@@ -64,10 +83,15 @@ export default function InfoNode({
           specularColor={Color3.Black()}
         />
       </sphere>
+      {Array.from(info.connectedNodes.values()).map((node) => {
+        const connectedPoint = node.position;
+        const path = [connectedPoint, info.position];
+        return <lines name={`${title}-connection`} points={path} />;
+      })}
       {showModal && (
         <HUDModal
           title={title}
-          body={body}
+          body={content}
           onClose={() => setShowModal(false)}
           show={showModal}
           setPlane={setPlane}
