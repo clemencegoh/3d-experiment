@@ -1,29 +1,39 @@
 import React, { useRef, useState } from "react";
-import { Vector3, Color3, Mesh, Path3D } from "@babylonjs/core";
-import { Line, useClick, useHover } from "react-babylonjs";
+import { Vector3, Color3, Mesh } from "@babylonjs/core";
+import { useClick, useHover } from "react-babylonjs";
 import HUDModal from "../gui/HUDModal";
 import InfoLabel from "./InfoLabel";
+import { useCategoryMap } from "src/hooks/dataHooks";
+import _ from "lodash";
+
+type TConnectedNode = {
+  position: Vector3;
+};
 
 export class CInfoNode {
   title: string;
   content: string;
   position: Vector3;
-  connectedNodes: Map<string, CInfoNode>;
+  tags?: string[];
+  connectedNodes: Map<string, TConnectedNode>;
 
   constructor({
     title,
     content,
     position,
+    tags,
     connectedNodes = new Map(),
   }: {
     title: string;
     content: string;
     position: Vector3;
-    connectedNodes?: Map<string, CInfoNode>;
+    tags?: string[];
+    connectedNodes?: Map<string, TConnectedNode>;
   }) {
     this.title = title;
     this.content = content;
     this.position = position;
+    this.tags = tags;
     this.connectedNodes = connectedNodes;
   }
 }
