@@ -4,10 +4,45 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>TIL Explorer</title>
+
+    <!-- Attempts to use py-script to run model in browser unsuccessful -->
+    
+    <!-- <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script> -->
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/pyodide/v0.23.2/full/pyodide.js"></script>
+    <script type="module">
+      async function main() {
+        let pyodide = await loadPyodide();
+        await pyodide.loadPackage("micropip");
+        const micropip = pyodide.pyimport("micropip");
+        await micropip.install("smart_open[http]")
+        await micropip.install("smart_open[https]")
+        await micropip.install("gensim");
+        await pyodide.runPython(`
+          import js
+          import os
+          import asyncio
+          from pyodide.http import open_url
+          from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+
+          print(os.getcwd())
+
+          # assume we already have the model
+          # model = Doc2Vec.load()
+
+          def inferPosition(text_arr):
+            global model
+            return model.infer_vector(text_arr)
+
+          js.inferPosition = inferPosition
+        `);
+      }
+      main();
+    </script> -->
   </body>
 </html>

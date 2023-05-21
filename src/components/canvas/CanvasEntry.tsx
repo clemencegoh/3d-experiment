@@ -68,7 +68,7 @@ const knowledgeBase: TInfoNodeProps[] = [
   },
 ];
 
-export default function HomePage() {
+export default function CanvasEntry() {
   const [canvasWidth, canvasHeight] = useWindowSize();
   const { updateGUIPlanePosition, setGUIPlane } = use2DGUI();
   const [labelsMap, { set: setLabelsMap }] = useMap<string, Mesh>(new Map());
